@@ -1,0 +1,105 @@
+---
+layout: post
+title: ngrok编译安装
+date: 2016-01-14 15:06 +0800
+categories: Linux
+tags: ngrok 
+description: 记录一次ngrok编译安装
+---
+
+
+天朝已经有很多玩家提供了免费的ngrok服务
+我这里也记录一下，写下实现过程中出现的一些小问题
+
+**搭建ngrok的前提**
+
+ - 一台vps，Linux的系统，我用的是CentOS的系统
+ - 一个域名，需要将域名进行泛解析
+ - 为服务器安装git与golang、mercurial
+<--->
+注意点：
+   
+ - 1、git版本不能太低，默认的CentOS的git( 1.7.1)版本太低。 我开始卡在这个地方，后升级git版本即可搞定。我的git version 1.8.4
+ - 2、Go 1.1+
+
+**ngrok编译分两块：**
+ - 服务端 （ngrokd）
+ - 配套客户端 （ngrok.exe）
+
+**下载ngrok源码**
+{% highlight bash lineons %}
+cd /usr/local/src/
+git clone https://github.com/inconshreveable/ngrok.git
+{% endhighlight %}
+
+**为根域名生成证书、并自己签名**
+{% highlight bash lineons %}
+openssl genrsa -out rootCA.key 2048
+openssl req -x509 -new -nodes -key rootCA.key -subj "/CN=blackeeper.com" -days 5000 -out rootCA.pem
+openssl genrsa -out device.key 2048
+openssl req -new -key device.key -subj "/CN=blackeeper.com" -out device.csr
+openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 5000
+{% endhighlight %}
+覆盖默认的官网ngrok证书
+{% highlight bash lineons %}
+cp rootCA.pem assets/client/tls/ngrokroot.crt
+cp device.crt assets/server/tls/snakeoil.crt 
+cp device.key assets/server/tls/snakeoil.key
+{% endhighlight %}
+
+**编译服务端**
+{% highlight bash lineons %}
+make release-server
+{% endhighlight %}
+编译的时候很多依赖包是需要自动下载的，有一个包log4go是在 code.google 上的，我们天朝服务器是无法访问google的，大家懂的。
+
+修改源码，将该包改为 github 上的地址:
+找到/usr/local/src/ngrok/src/ngrok/log/logger.go，第五行import中的 log 包，改为：
+{% highlight bash lineons %}
+log "github.com/keepeye/log4go"
+{% endhighlight %}
+
+然后重新make release-server即可
+
+编译成功后，应该可以在当前目录生成bin/ngrokd
+{% highlight bash lineons %}
+./bin/ngrokd  -domain="blakeeper.com" -httpAddr=":8080"
+{% endhighlight %}
+**编译客户端**
+
+编译windows客户端
+{% highlight bash lineons %}
+GOOS=windows GOARCH=amd64
+make release-client
+#如果是32位系统，这里 GOARCH=386
+{% endhighlight %}
+会生成在当前目录bin/windows_amd64/ngrok.exe
+
+编译linux客户端
+{% highlight bash lineons %}
+make release-client
+#可使用这条命令编译Linux服务端与客户端make release-all
+{% endhighlight %}
+编译成功后，应该可以在当前目录bin/ngrok
+
+
+**使用:**
+现在我们来到自己电脑上，准备启动客户端。在启动之前，我们需要为客户端编写一个配置文件 
+{% highlight bash lineons %}
+ngrok.cfg 
+server_addr: "blackeeper.com:4443"
+trust_host_root_certs: false
+{% endhighlight %}
+打开windows的cmd
+{% highlight bash lineons %}
+ngrok.exe -config=ngrok.cfg -subdomain xxyy 80
+{% endhighlight %}
+如果显示online，说明建立成功
+可以通过浏览器xxyy.blackeeper.com:8080访问本机的127.0.0.1:80的WEB
+部署参考文档：
+[参考文档1][1]
+[参考文档2][2]
+
+
+  [1]: https://github.com/inconshreveable/ngrok/blob/master/docs/SELFHOSTING.md
+  [2]: http://www.svenbit.com/2014/09/run-ngrok-on-your-own-server/
