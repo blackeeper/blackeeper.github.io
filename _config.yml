@@ -31,9 +31,9 @@ menu:
   - page: 关于
     directory: about/
     icon: icon-about
-  - page: 历史
-    directory: history/
-    icon: icon-history
+  - page: 友情链接
+    directory: links/
+    icon: icon-link
   - page: 订阅
     directory: feed.xml
     icon: icon-rss

@@ -903,6 +903,10 @@ i {
 .icon-home:before {
   content: "\e900"; }
 
+.icon-link:before {
+  content: "\e9cb";
+}
+
 .icon-history:before {
   content: "\e901"; }
 
