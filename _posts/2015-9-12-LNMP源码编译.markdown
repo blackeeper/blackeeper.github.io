@@ -1,0 +1,441 @@
+---
+layout: post
+title: LNMP源码编译 
+date:   2015-9-12 10:20:00 +0800
+categories: Linux
+tags: nginx mysql php
+description: 记录一次LNMP源码编译
+comments: true
+---
+记录一次LNMP源码编译，给有需要的人
+
+此LNMP架构的配置版本`Centos 6.6`+`nginx 1.8.0`+`mysql5.6.26`+`php5.3.28`
+
+初始化Linux系统编译环境
+
+
+1.1 关闭`selinux`
+<!-- more -->
+如果你不知道`selinux`是干什么，建议设置`selinux`为permissive状态。
+{% highlight bash %}
+#getenforce
+{% endhighlight %}
+
+如显示Permissive则已经关闭,显示Enforcing则开启
+设置`selinux`为Permissive
+{% highlight bash %}
+# setenforce 0
+{% endhighlight %}
+
+<!--more-->
+
+
+修改配置文件，下次开机默认为permissive状态
+{% highlight bash %}
+# vim /etc/selinux/config
+SELINUX=permissive
+{% endhighlight %}
+1.2 清空防火墙策略
+如果你不知道`iptables`是干什么的，建议清空防火墙策略,并保存。
+{% highlight bash %}
+#iptables -F
+#iptables -t nat -F
+#service iptables save
+{% endhighlight %}
+1.3 安装源码编译环境
+由于源码编译环境的需要，安装编译器和一些头文件及库文件
+{% highlight bash %}
+#yum -y install wget make vim  gcc gcc-c++ ncurses ncurses-devel automake \
+libtool autoconf libjpeg libjpeg-devel libpng libpng-devel freetype \
+freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 \
+glib2-devel bzip2 bzip2-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5 \
+krb5-devel libidn libidn-devel openssl openssl-devel  pcre pcre-devel
+{% endhighlight %}
+ 
+
+
+
+NGINX源码安装部署
+--------------
+
+2.1 下载`nginx`源码包
+{% highlight bash %}
+#cd /usr/local/src 
+#wget http://nginx.org/download/nginx-1.8.0.tar.gz
+{% endhighlight %}
+建立`nginx`用户
+{% highlight bash %}
+#groupadd -r nginx
+#useradd -s /sbin/nologin  -g nginx -r nginx
+{% endhighlight %}
+解压`nginx`源码包
+{% highlight bash %}
+#tar -xf  nginx-1.8.0.tar.gz
+{% endhighlight %}
+进入解压目录
+{% highlight bash %}
+#cd nginx-1.8.0
+{% endhighlight %}
+2.2 设置`nginx`编译参数+编译+安装
+{% highlight bash %}
+#./configure –prefix=/usr/local/webserver/nginx –user=nginx --group=nginx
+{% endhighlight %}
+编译与安装
+{% highlight bash %}
+#make && make install
+{% endhighlight %}
+2.3 建立`nginx`的service文件
+{% highlight bash %}
+#vim /etc/init.d/nginx
+#!/bin/sh
+#
+# nginx - this script starts and stops the nginx daemin
+#
+# chkconfig:   - 85 15
+# description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
+#               proxy and IMAP/POP3 proxy server
+# processname: nginx
+# config:      /usr/local/webserver/nginx/conf/nginx.conf
+# pidfile:     /usr/local/webserver/nginx/logs/nginx.pid
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] && exit 0
+
+nginx="/usr/local/webserver/nginx/sbin/nginx"
+prog=$(basename $nginx)
+
+NGINX_CONF_FILE="/usr/local/webserver/nginx/conf/nginx.conf"
+
+lockfile=/var/lock/subsys/nginx
+
+start() {
+    [ -x $nginx ] || exit 5
+    [ -f $NGINX_CONF_FILE ] || exit 6
+    echo -n $"Starting $prog: "
+    daemon $nginx -c $NGINX_CONF_FILE
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog -QUIT
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    configtest || return $?
+    stop
+    start
+}
+
+reload() {
+    configtest || return $?
+    echo -n $"Reloading $prog: "
+    killproc $nginx -HUP
+    RETVAL=$?
+    echo
+}
+
+force_reload() {
+    restart
+}
+
+configtest() {
+  $nginx -t -c $NGINX_CONF_FILE
+}
+
+rh_status() {
+    status $prog
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart|configtest)
+        $1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+            ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
+        exit 2
+esac
+{% endhighlight %}   
+
+2.4 开机启动`nginx`服务
+===============
+{% highlight bash %}
+#chmod +x /etc/init.d/nginx
+#chkconfig nginx on
+#service nginx start
+{% endhighlight %}   
+    
+   
+
+`MYSQL`源码安装部署
+--------------
+
+  
+
+3.1 下载`mysql`的源码包
+{% highlight bash %}
+#cd /usr/local/src
+#wget http://cdn.mysql.com/Downloads/MySQL-5.6/mysql-5.6.26.tar.gz
+#tar -xf mysql-5.6.26.tar.gz
+#groupadd -r mysql
+#useradd -s /sbin/nologin -g mysql -r mysql
+{% endhighlight %}   
+
+3.2 设置`nginx`编译参数+编译+安装
+{% highlight bash %}
+#cd mysql-5.6.26
+#cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DMYSQL_DATADIR=/usr/local/webserver/mysql/data -DSYSCONFDIR=/etc -DMYSQL_UNIX_ADDR=/var/lib/mysql/mysql.sock 
+#make && make install
+#chown -R mysql:mysql /usr/local/webserver/mysql
+#chmod 777 /var/lib/mysql
+{% endhighlight %}   
+
+3.3 初始化数据库
+{% highlight bash %}
+#cd /usr/local/webserver/mysql
+#scripts/mysql_install_db --basedir=/usr/local/webserver/mysql --datadir=/usr/local/webserver/mysql/data --user=mysql
+{% endhighlight %}    
+  
+
+3.4 建立`mysql`的service文件
+{% highlight bash %}
+#cp support-files/mysql.server /etc/init.d/mysql
+#chmod +x /etc/init.d/mysql
+{% endhighlight %}
+
+
+3.5 开机启动`mysql`服务
+{% highlight bash %}
+#chkconfig mysql on
+#service mysql start
+{% endhighlight %}    
+
+
+`PHP`源码安装部署
+------------
+4.1 安装`GD2`库
+{% highlight bash %}
+#cd /usr/local/src
+#wget http://down1.chinaunix.net/distfiles/gd-2.0.32.tar.gz
+#tar -xf  gd-2.0.32.tar.gz
+#./configure –prefix=/usr/local/webserver/gd2
+#make && make install
+{% endhighlight %}   
+
+4.2 源码编译安装`PHP`
+{% highlight bash %}
+#cd /usr/local/src
+#wget http://us2.php.net/distributions/php-5.3.28.tar.gz
+#tar -xf php-5.3.28.tar.gz
+#cd php-5.3.28./configure --prefix=/usr/local/webserver/php --enable-fpm --with-mysql=/usr/local/webserver/mysql –with-mysqli=/usr/local/webserver/mysql/bin/mysql_config --with-config-file-path=/usr/local/webserver/php  --with-openssl --enable-mbstring --with-zlib --enable-xml --with-freetype-dir= --with-gd=/usr/local/webserver/gd2/ --with-jpeg-dir  --enable-bcmath --with-mcrypt --with-iconv --enable-pcntl --enable-shmop --enable-simplexml --enable-ftp
+#make  && make install
+#cp php.ini-development /usr/local/webserver/php/php.ini
+{% endhighlight %}   
+
+4.3 编辑`php.ini`，添加时区、`pathinfo`支持
+{% highlight bash %}
+#vim /usr/local/webserver/php/php.ini
+#修改时区
+date.timezone = prc
+#php配置添加pathinfo
+enable_dl = On
+cgi.force_redirect = 0 
+cgi.fix_pathinfo=1
+fastcgi.impersonate = 1 
+cgi.rfc2616_headers = 1 
+allow_url_fopen = On
+{% endhighlight %}    
+
+
+4.4 建立`php-fpm`的service文件
+{% highlight bash %}
+#vim /etc/init.d/php-fpm
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          php-fpm
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts php-fpm
+# Description:       starts the PHP FastCGI Process Manager daemon
+### END INIT INFO  
+prefix=/usr/local/webserver/php 
+php_fpm_BIN=${prefix}/sbin/php-fpm
+php_fpm_CONF=${prefix}/etc/php-fpm.conf
+php_fpm_PID=${prefix}/var/run/php-fpm.pid    
+php_opts="--fpm-config $php_fpm_CONF"
+php_pid="--pid $php_fpm_PID"   
+wait_for_pid () {
+        try=0   
+        while test $try -lt 35 ; do 
+                case "$1" in
+                        'created')
+                        if [ -f "$2" ] ; then
+                                try=''
+                                break
+                        fi
+                        ;;
+                        'removed')
+                        if [ ! -f "$2" ] ; then
+                                try=''
+                                break
+                        fi
+                        ;;
+                esac   
+                echo -n .
+                try=`expr $try + 1`
+                sleep 1   
+        done   
+}  
+case "$1" in
+        start)
+                echo -n "Starting php-fpm     
+                $php_fpm_BIN $php_opts $php_pid  
+                if [ "$?" != 0 ] ; then
+                        echo " failed"
+                        exit 1
+                fi  
+                wait_for_pid created $php_fpm_PID 
+                if [ -n "$try" ] ; then
+                        echo " failed"
+                        exit 1
+                else
+                        echo " done"
+                fi
+        ;;  
+        stop)
+                echo -n "Gracefully shutting down php-fpm "   
+                if [ ! -r $php_fpm_PID ] ; then
+                        echo "warning, no pid file found - php-fpm is not running ?"
+                        exit 1
+                fi   
+                kill -QUIT `cat $php_fpm_PID`  
+                wait_for_pid removed $php_fpm_PID   
+                if [ -n "$try" ] ; then
+                        echo " failed. Use force-exit"
+                        exit 1
+                else
+                        echo " done"
+                fi
+                      ;;   
+        force-quit)
+                echo -n "Terminating php-fpm "    
+                if [ ! -r $php_fpm_PID ] ; then
+                        echo "warning, no pid file found - php-fpm is not running ?"
+                        exit 1
+                fi  
+                kill -TERM `cat $php_fpm_PID`  
+                wait_for_pid removed $php_fpm_PID
+
+                if [ -n "$try" ] ; then
+                        echo " failed"
+                        exit 1
+                else
+                        echo " done"
+                fi
+        ;;
+
+        restart)
+                $0 stop
+                $0 start
+        ;;
+
+        reload)
+
+                echo -n "Reload service php-fpm "
+
+                if [ ! -r $php_fpm_PID ] ; then
+                        echo "warning, no pid file found - php-fpm is not running ?"
+                        exit 1
+                fi
+
+                kill -USR2 `cat $php_fpm_PID`
+
+                echo " done"
+        ;;
+
+        *)
+                echo "Usage: $0 {start|stop|force-quit|restart|reload}"
+                exit 1
+        ;;
+
+esac
+{% endhighlight %}
+4.5 开机启动`php-fpm`
+{% highlight bash %}
+#chmod +x /etc/init.d/php-fpm
+#chkconfig php-fpm on
+#service php-fpm start
+{% endhighlight %}
+4.6 整合`nginx`与`php`
+
+编辑nginx.conf
+{% highlight bash %}
+#vim /usr/local/webserver/nginx/conf/nginx.conf
+{% endhighlight %}
+在server里面添加一个location
+{% highlight bash %}
+location ~ \.php {
+             root   /usr/local/webserver/nginx/html;
+             include        fastcgi_params;
+             set $real_script_name $fastcgi_script_name;
+             set $path_info "";
+             set $real_script_name $fastcgi_script_name;
+             if ($fastcgi_script_name ~ "^(.+\.php)(/.+)$") {
+                 set $real_script_name $1;
+                 set $path_info $2;
+             }
+             fastcgi_param SCRIPT_FILENAME $document_root$real_script_name;
+             fastcgi_param SCRIPT_NAME $real_script_name;
+             fastcgi_param PATH_INFO $path_info;
+             fastcgi_pass   127.0.0.1:9000;
+             fastcgi_index  index.php;
+         }
+{% endhighlight %}
+修改location / {｝里面index这一行，添加index.php
+{% highlight bash %}
+ index  index.php index.html index.htm;
+{% endhighlight %}
+重新导入`nginx`配置
+{% highlight bash %}
+#service nginx reload
+{% endhighlight %}
