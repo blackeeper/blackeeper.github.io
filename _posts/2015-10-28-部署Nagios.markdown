@@ -1,0 +1,207 @@
+---
+layout: post
+title:  部署Nagios
+date:   2015-10-28 10:26:00 +0800
+categories: Linux Monitor
+tags: 监控 nagios rrdtool nrpe
+description: 部署Nagios
+comments: true
+---
+
+
+最近部署了一套高可用的架构，其中就使用了Nagios作为监控。用的是最新的nagios-4.1.1。其中出现了一些问题，查了很多资料发现很多关于Nagios监控的部署都是以前很老的版本，最新的nagios-4.1.1的安装几乎没有。进过自己的部署，发现与老版本有些不同，于是整理一下，并记录此次部署过程。
+首先介绍一下nagios的关系图
+
+
+<!-- more -->
+
+
+![nagios][1]
+
+**监控机软件列表**
+
+     - nagios core 4.1.1
+     - nagios plugin 2.1.1
+     - nrpe 2.15
+     - rrdtool 1.4.5
+     - pnp4nagios 0.6.22
+     - GD 2.0.32
+     - httpd （yum 安装）
+     - PHP （yum 安装）
+
+**被监控机所需软件列表**
+
+     - nagios plugin 2.1.1
+     - nrpe 2.15
+
+以下是监控机的软件安装，被监控机只需安装nagios-plugins+NRPE，安装步骤一样
+
+**安装Gcc、Apache、PHP和相关的包**
+
+    [root@naigos ~]# yum install -y gcc glibc glibc-common gd gd-devel openssl-devel perl unzip mailx httpd php 
+
+**安装GD库，GD库是处理图形的扩展库**
+
+    [root@RS1 src]# tar -xf gd-2.0.32.tar.gz
+    [root@RS1 src]# cd gd-2.0.32
+    [root@RS1 gd-2.0.32]# ./configure --prefix=/usr/local/gd2
+    [root@RS1 gd-2.0.32]# make &&make install
+
+
+**建立用户**
+
+     [root@naigos src]# useradd -s /sbin/nologin -r nagios
+
+**Nagios安装**
+
+    [root@naigos src]# tar -xf nagios-4.1.1.tar.gz 
+    [root@naigos src]# cd nagios-4.1.
+    [root@naigos nagios-4.1.1]# ./configure --prefix=/usr/local/nagios --with-nagios-user=nagios --with-nagios-group=nagios --with-httpd-conf=/etc/httpd/conf.d/ --with-mail=/bin/mail --with-gd-lib=/usr/local/gd2/ --with-gd-inc=/usr/local/gd2/ --with-htmurl=/nagios
+    [root@naigos nagios-4.1.1]# make all
+    [root@naigos nagios-4.1.1]# make install
+    [root@naigos nagios-4.1.1]# make install-init
+    [root@naigos nagios-4.1.1]# make install-commandmode
+    [root@naigos nagios-4.1.1]# make install-config
+    [root@naigos nagios-4.1.1]# make install-webconf
+
+**添加网页认证的用户**
+
+    #htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+
+**nagios-plugins安装**
+
+    [root@naigos src]# tar -xf nagios-plugins-2.1.1.tar.gz
+    [root@naigos nrpe-2.15]# cd ../nagios-plugins-2.1.1
+    [root@naigos nagios-plugins-2.1.1]# ./configure --prefix=/usr/local/nagios --enable-perl-modules --with-nagios-user=nagios --with-nagios-group=nagios
+    [root@naigos nagios-plugins-2.1.1]# make &&make install
+
+**NRPE安装**
+
+    [root@naigos src]# tar -xf nrpe-2.15.tar.gz 
+    [root@naigos src]# cd nrpe-2.15
+    [root@naigos nrpe-2.15]# ./configure --prefix=/usr/local/nagios --with-nrpe-user=nagios --with-nrpe-group=nagios --with-nagios-user=nagios --with-nagios-group=nagios 
+    [root@naigos ~]# make all
+    [root@naigos ~]# make install-plugin
+
+
+**RRDTOOL安装**
+
+    安装rrdtool依赖
+    #yum install -y cairo-devel  pango-devel libxml2 libxml2-devel
+
+    [root@naigos src]# tar -xf rrdtool-1.4.5.tar.gz
+    [root@naigos src]# cd rrdtool-1.4.5
+    #yum install -y cairo-devel  pango-devel libxml2 libxml2-devel
+    #./configure --prefix=/usr/local/rrdtool
+    #make && make install
+
+**Pnp4nagios安装**
+
+    [root@naigos src]# tar -xf pnp4nagios-0.6.22.tar.gz
+    [root@naigos src]# cd pnp4nagios-0.6.22
+    #./configure --prefix=/usr/local/pnp4nagios  --with-nagios-user=nagios --with-nagios-group=nagios --with-rrdtool=/usr/local/rrdtool/bin/rrdtool   --with-httpd-conf=/etc/httpd/conf.d/
+    #make all
+    #make fullinstall
+
+**启动Apache与nagios**
+
+    [root@naigos ~]# service nagios start
+    [root@naigos ~]# service httpd start
+
+用浏览器打开`http://IP/nagios`
+![nagios_core][2]
+**以下是监控机软件的配置**
+
+nagios的配置文件
+
+    /usr/local/nagios/etc/nagios.cfg
+    /usr/local/nagios/etc/objects/*.cfg
+
+在/usr/local/nagios/etc/objects/DR1.cfg添加配置文件需在nagios.cfg里指定
+
+    cfg_file=/usr/local/nagios/etc/objects/DR1.cfg
+
+**Nagios的各个配置的基本关系**
+
+**`主机组-->主机-->[服务组]-->服务-->命令-->联系组-->联系人`**
+
+    主机组：定义一个或多个主机的集合
+    主机：定义主机名、IP、联系人组
+    服务组：服务的集合
+    服务：定义一个服务用什么命令去检查，比如检查sshd服务使用命令check_ssh
+    命令：定义一个命令，比如定义一个命令为check_sshd，它使用什么去监测
+    联系组：联系人的成员
+    联系人：定义联系人名、邮箱等等
+
+**被监控机的软件配置**
+
+NRPE的配置
+
+    [root@DR1 nrpe-2.15]# vim /usr/local/nagios/etc/nrpe.cfg
+    allowed_hosts=127.0.0.1,192.168.5.0/24 //添加监控机的IP或者IP段
+
+添加nrped服务
+
+    [root@DR1 ~]# vim /etc/init.d/nrped 
+    #!/bin/bash   
+    # chkconfig: 2345 88 12   
+    # description: NRPE DAEMON   
+    
+    NRPE=/usr/local/nagios/bin/nrpe
+    NRPECONF=/usr/local/nagios/etc/nrpe.cfg
+    
+    case "$1" in
+        start)
+            echo -n "Starting NRPE daemon..." 
+            $NRPE -c $NRPECONF -d
+            echo " done." 
+            ;;
+        stop)
+            echo -n "Stopping NRPE daemon..." 
+            pkill -u nagios nrpe
+            echo " done." 
+        ;;
+        restart)
+            $0 stop
+            sleep 2
+            $0 start
+            ;;
+        *)
+            echo "Usage: $0 start|stop|restart" 
+            ;;
+        esac
+    exit 0
+添加执行权限，并开机启动
+
+    [root@RS1 nrpe-2.15]# chmod +x /etc/init.d/nrped
+    [root@RS1 nrpe-2.15]# chkconfig nrped on
+    [root@RS1 nrpe-2.15]# service nrped start
+
+
+NRPE的命令定义
+
+    command[check_users]=/usr/local/nagios/libexec/check_users -w 5 -c 10
+    [check_users]方括号内的命令可自定义                           
+    此目录下/usr/local/nagios/libexec/check_xxyy的脚本可通过--help来查看用法
+
+
+    # vim /usr/local/nagios/etc/nrpe.cfg 
+    command[check_users]=/usr/local/nagios/libexec/check_users -w 5 -c 10
+    command[check_load]=/usr/local/nagios/libexec/check_load -w 15,10,5 -c 30,25,20
+    command[check_root]=/usr/local/nagios/libexec/check_disk -w 20% -c 10% -p /dev/mapper/vg_dr2-lv_root
+    command[check_swap]=/usr/local/nagios/libexec/check_swap -w 20% -c 10%
+    command[check_mem]=/usr/local/nagios/libexec/check_mem -f -w 20% -c 10%
+    command[check_zombie_procs]=/usr/local/nagios/libexec/check_procs -w 5 -c 10 -s Z
+    command[check_total_procs]=/usr/local/nagios/libexec/check_procs -w 150 -c 200
+
+ **效果图**
+![nagios_01.png][3]
+![nagios_02.png][4]
+![nagios_03.png][5]
+
+
+  [1]: {{ "/images/2015/10/nagios.jpg" | prepend: site.baseurl }}
+  [2]: {{ "/images/2015/10/nagios_core.png" | prepend: site.baseurl }}
+  [3]: {{ "/images/2015/10/2115125581.png" | prepend: site.baseurl }}
+  [4]: {{ "/images/2015/10/3361542868.png" | prepend: site.baseurl }}
+  [5]: {{ "/images/2015/10/539525278.png" | prepend: site.baseurl }}
