@@ -9,29 +9,31 @@ comments: true
 ---
 
 
-天朝已经有很多玩家提供了免费的ngrok服务
+天朝已经有很多玩家提供了免费的`ngrok`服务
 我这里也记录一下，写下实现过程中出现的一些小问题
 
 **搭建ngrok的前提**
- - 一台vps，Linux的系统，我用的是CentOS的系统
+ - 一台vps，Linux的系统，我用的是`CentOS`的系统
  - 一个域名，需要将域名进行泛解析
- - 为服务器安装git与golang、mercurial
+ - 为服务器安装`git`与`golang`、`mercurial`
 
 注意点： 
  - 1、git版本不能太低，默认的CentOS的git( 1.7.1)版本太低。 我开始卡在这个地方，后升级git版本即可搞定。我的git version 1.8.4
  - 2、Go 1.1+
+ 
 <!-- more -->
-**ngrok编译分两块：**
+
+`ngrok`编译分两块：
  - 服务端 （ngrokd）
  - 配套客户端 （ngrok.exe）
 
-**下载ngrok源码**
+下载`ngrok`源码
 {% highlight bash lineons %}
 cd /usr/local/src/
 git clone https://github.com/inconshreveable/ngrok.git
 {% endhighlight %}
 
-**为根域名生成证书、并自己签名**
+为根域名生成证书、并自己签名
 {% highlight bash lineons %}
 openssl genrsa -out rootCA.key 2048
 openssl req -x509 -new -nodes -key rootCA.key -subj "/CN=blackeeper.com" -days 5000 -out rootCA.pem
@@ -39,7 +41,7 @@ openssl genrsa -out device.key 2048
 openssl req -new -key device.key -subj "/CN=blackeeper.com" -out device.csr
 openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 5000
 {% endhighlight %}
-覆盖默认的官网ngrok证书
+覆盖默认的官网`ngrok`证书
 {% highlight bash lineons %}
 cp rootCA.pem assets/client/tls/ngrokroot.crt
 cp device.crt assets/server/tls/snakeoil.crt 
@@ -58,7 +60,7 @@ make release-server
 log "github.com/keepeye/log4go"
 {% endhighlight %}
 
-然后重新make release-server即可
+然后重新`make release-server`即可
 
 编译成功后，应该可以在当前目录生成bin/ngrokd
 {% highlight bash lineons %}
@@ -66,7 +68,7 @@ log "github.com/keepeye/log4go"
 {% endhighlight %}
 **编译客户端**
 
-编译windows客户端
+编译`windows`客户端
 {% highlight bash lineons %}
 GOOS=windows GOARCH=amd64
 make release-client
@@ -74,7 +76,7 @@ make release-client
 {% endhighlight %}
 会生成在当前目录bin/windows_amd64/ngrok.exe
 
-编译linux客户端
+编译`linux`客户端
 {% highlight bash lineons %}
 make release-client
 #可使用这条命令编译Linux服务端与客户端make release-all
@@ -93,8 +95,8 @@ trust_host_root_certs: false
 {% highlight bash lineons %}
 ngrok.exe -config=ngrok.cfg -subdomain xxyy 80
 {% endhighlight %}
-如果显示online，说明建立成功
-可以通过浏览器xxyy.blackeeper.com:8080访问本机的127.0.0.1:80的WEB
+如果显示`online`，说明建立成功
+可以通过浏览器`xxyy.blackeeper.com:8080`访问本机的127.0.0.1:80的WEB
 部署参考文档：
 [参考文档1][1]
 [参考文档2][2]

@@ -211,7 +211,8 @@ a:focus {
         margin: 0 5px;
         padding: 1px 5px;
         border: 1px solid #ccc;
-        background: #eee; }
+        background: #eee;
+        border-radius: 3px; }
       .post .post-content p a {
         color: #01579f;
         padding-bottom: 2px;
@@ -632,7 +633,8 @@ figure.highlight {
   margin: 10px 0;
   line-height: 1.2em;
   color: #333;
-  padding-top: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   overflow: hidden; }
   figure.highlight table {
     display: block;
