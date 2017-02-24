@@ -5,6 +5,7 @@ date: 2016-01-14 15:06 +0800
 categories: Linux
 tags: ngrok 
 description: 记录一次ngrok编译安装
+comments: true
 ---
 
 
@@ -12,16 +13,14 @@ description: 记录一次ngrok编译安装
 我这里也记录一下，写下实现过程中出现的一些小问题
 
 **搭建ngrok的前提**
-
  - 一台vps，Linux的系统，我用的是CentOS的系统
  - 一个域名，需要将域名进行泛解析
  - 为服务器安装git与golang、mercurial
-<--->
-注意点：
-   
+
+注意点： 
  - 1、git版本不能太低，默认的CentOS的git( 1.7.1)版本太低。 我开始卡在这个地方，后升级git版本即可搞定。我的git version 1.8.4
  - 2、Go 1.1+
-
+<!-- more -->
 **ngrok编译分两块：**
  - 服务端 （ngrokd）
  - 配套客户端 （ngrok.exe）

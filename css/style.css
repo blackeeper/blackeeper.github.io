@@ -27,8 +27,15 @@ body {
   padding-top: 20px;
   border-top: 1px solid rgba(150, 150, 150, 0.2); }
 
-a, button.submit {
+#a, button.submit {
   color: #6E7173;
+  text-decoration: none;
+  -webkit-transition: all .1s ease-in;
+  -moz-transition: all .1s ease-in;
+  -o-transition: all .1s ease-in;
+  transition: all .1s ease-in; }
+a, button.submit {
+  color: #129fea;
   text-decoration: none;
   -webkit-transition: all .1s ease-in;
   -moz-transition: all .1s ease-in;

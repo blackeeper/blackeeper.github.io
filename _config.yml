@@ -1,17 +1,18 @@
 # Site settings
-title: 博客标题
-subtitle: 博客副标题
-description: 博客描述
+title: blackeeper
+subtitle: Keeper will not stop walking in the black days!
+description: blackeeper's blog
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://yourdomain.com" # 你的域名
 page_no_title: "No title" # 文章无标题时默认显示内容
 beian: # "备案号"
-email: email@yourdomain.com
+email: li.blackeeper@gmail.com
 
 # Build settings
 markdown: kramdown
 gems: [jekyll-paginate]
 
+excerpt_separator: <!-- more -->
 # Pageinate settings
 paginate: 10 # 分页大小
 paginate_path: ":num"
@@ -31,9 +32,9 @@ menu:
   - page: 关于
     directory: about/
     icon: icon-about
-  - page: 友情链接
-    directory: links/
-    icon: icon-link
+  - page: 历史 | 友链
+    directory: history/
+    icon: icon-history
   - page: 订阅
     directory: feed.xml
     icon: icon-rss
