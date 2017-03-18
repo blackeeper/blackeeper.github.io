@@ -3,7 +3,7 @@ layout: post
 title:  深圳最美海滨栈道首届30公里徒步
 date:   2016-01-11 10:32:00 +0800
 categories: Life
-tags: 生活
+tags: life
 description: 深圳最美海滨栈道首届30公里徒步
 comments: true
 ---

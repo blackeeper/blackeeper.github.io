@@ -1,7 +1,7 @@
 ---
 layout: page
-title: history
-permalink: /history/
+title: links
+permalink: /links/
 ---
 
 * [吾单](http://wudan.org)

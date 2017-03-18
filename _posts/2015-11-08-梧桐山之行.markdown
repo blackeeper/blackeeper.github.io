@@ -3,7 +3,7 @@ layout: post
 title:  梧桐山之行
 date:   2015-11-08 11:25:00 +0800
 categories: Life
-tags: 生活
+tags: life
 description: 记录一次梧桐山之行
 comments: true
 ---

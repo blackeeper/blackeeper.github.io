@@ -3,7 +3,7 @@ title: blackeeper
 subtitle: Keeper will not stop walking in the black days!
 description: blackeeper's blog
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://yourdomain.com" # 你的域名
+url: "http://blackeeper.com" # 你的域名
 page_no_title: "No title" # 文章无标题时默认显示内容
 beian: # "备案号"
 email: li.blackeeper@gmail.com
@@ -12,9 +12,12 @@ email: li.blackeeper@gmail.com
 markdown: kramdown
 gems: [jekyll-paginate]
 
+#摘要分隔符
 excerpt_separator: <!-- more -->
+#语法高亮
+highlighter: pygments
 # Pageinate settings
-paginate: 10 # 分页大小
+paginate: 6 # 分页大小
 paginate_path: ":num"
 
 # Search settings
@@ -32,8 +35,8 @@ menu:
   - page: 关于
     directory: about/
     icon: icon-about
-  - page: 历史 | 友链
-    directory: history/
+  - page: 友链
+    directory: links/
     icon: icon-history
   - page: 订阅
     directory: feed.xml
@@ -41,9 +44,9 @@ menu:
 
 # Link settings
 links: # 友情链接
-  - title: site-name1
-    url: http://www.example1.com/
-  - title: site-name2
-    url: http://www.example2.com/
-  - title: site-name3
-    url: http://www.example3.com/
+  - title: fooleap.org
+    url: http://blog.fooleap.org/
+  - title: wudan.
+    url: http://www.wudan.org/
+  - title: 更多
+    url: /links/
