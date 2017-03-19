@@ -15,7 +15,7 @@ gems: [jekyll-paginate]
 #摘要分隔符
 excerpt_separator: <!-- more -->
 #语法高亮
-highlighter: pygments
+highlighter: rouge
 # Pageinate settings
 paginate: 6 # 分页大小
 paginate_path: ":num"
