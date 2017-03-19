@@ -2,7 +2,7 @@
 layout: post
 title:  部署Nagios
 date:   2015-10-28 10:26:00 +0800
-categories: Linux Monitor
+categories: linux monitor
 tags: nagios rrdtool nrpe
 description: 部署Nagios
 comments: true

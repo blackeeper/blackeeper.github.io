@@ -2,7 +2,7 @@
 layout: post
 title: ngrok编译安装
 date: 2016-01-14 15:06 +0800
-categories: Linux
+categories: linux
 tags: ngrok 
 description: 记录一次ngrok编译安装
 comments: true

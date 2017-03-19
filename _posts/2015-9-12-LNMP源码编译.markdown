@@ -2,7 +2,7 @@
 layout: post
 title: LNMP源码编译 
 date:   2015-9-12 10:20:00 +0800
-categories: Linux
+categories: linux
 tags: nginx mysql php
 description: 记录一次LNMP源码编译
 comments: true

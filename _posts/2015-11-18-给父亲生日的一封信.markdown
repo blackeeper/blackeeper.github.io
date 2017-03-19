@@ -2,7 +2,7 @@
 layout: post
 title:  给父亲生日的一封信
 date:   2015-11-18 14:08:00 +0800
-categories: Life
+categories: life
 tags: life
 description: 给父亲生日的一封信
 comments: true
