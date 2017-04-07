@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to Jekyll!
 #
 # This config file is meant for settings that affect your whole blog, values
@@ -32,3 +33,57 @@ gems:
 exclude:
   - Gemfile
   - Gemfile.lock
+=======
+# Site settings
+title: blackeeper
+subtitle: Keeper will not stop walking in the black days!
+description: blackeeper's blog
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://blackeeper.com" # 你的域名
+page_no_title: "No title" # 文章无标题时默认显示内容
+beian: # "备案号"
+email: li.blackeeper@gmail.com
+
+# Build settings
+markdown: kramdown
+gems: [jekyll-paginate]
+
+#摘要分隔符
+excerpt_separator: <!-- more -->
+#语法高亮
+highlighter: rouge
+# Pageinate settings
+paginate: 6 # 分页大小
+paginate_path: ":num"
+
+# Search settings
+baidu_search: true
+google_search: # true
+
+# Menu settings
+menu:
+  - page: 首页
+    directory: .
+    icon: icon-home
+  - page: 归档
+    directory: archives/
+    icon: icon-archive
+  - page: 关于
+    directory: about/
+    icon: icon-about
+  - page: 友链
+    directory: links/
+    icon: icon-history
+  - page: 订阅
+    directory: feed.xml
+    icon: icon-rss
+
+# Link settings
+links: # 友情链接
+  - title: fooleap.org
+    url: http://blog.fooleap.org/
+  - title: wudan.
+    url: http://www.wudan.org/
+  - title: 更多
+    url: /links/
+>>>>>>> master

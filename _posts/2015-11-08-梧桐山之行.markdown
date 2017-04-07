@@ -1,0 +1,105 @@
+---
+layout: post
+title:  梧桐山之行
+date:   2015-11-08 11:25:00 +0800
+categories: life
+tags: life
+description: 记录一次梧桐山之行
+comments: true
+---
+
+一直想去爬深圳最高的山,但无奈一个人.
+于是和富哥(大学基友)邀约,周末一起去爬梧桐山.
+经过富哥的组织,就有这累死人不偿命的一天.
+简单说一下过程,然后贴图
+
+1. 早上8点出发,9点半到梧桐山总站,10点与富哥+富哥同事回合.
+2. 由于有人晕车,所以大概11点从山脚出发
+3. 然后走小道上山,一直到山顶.此时是13:40.
+4. 下山走的大道,路程较远,但边聊边走, 笑得很嗨.
+5. 17:30左右到山脚大家吃碗粉,稍作休息
+6. 排队等公交,回程.8点半到家.
+<!-- more -->
+
+由于山顶的那块石头人实在太多,我们只有在附近找了一个地方,一起合照
+![山顶合照][1]
+
+
+![富哥合照][2]
+![合照][3]
+![富哥与我合照][4]
+![富哥同事][5]
+![自己单独照][6]
+
+![富哥同事][7]
+![大美女][8]
+![大美女][9]
+![大美女][10]
+![与大美女合照][11]
+![4人合照][12]
+
+
+
+
+![两位大美女合照][13]
+![半山风景][14]
+![小美女][15]
+![大美女][16]
+![QQ图片20151108120625.jpg][17]
+![QQ图片20151108120628.jpg][18]
+![QQ图片20151108120636.jpg][19]
+![QQ图片20151108120653.jpg][20]
+![7人合照][21]
+![7人合照][22]
+![小美女][23]
+
+![额,丑到爆][24]
+从上往下看,都是雾,已经模糊一片
+![大雾][25]
+![小房子][26]
+![合照][27]
+人多得就没停过,人人人,到底有多少人我不知道
+反正和排队差不多了,前后都有人,停都停不下来
+![人多得就没停过][28]
+![人人人][29]
+![到底有多少人][30]
+![随处可见的人][31]
+![人][32]
+![亭子][33]
+![小房子][34]
+
+
+  [1]: {{ "/images/2015/11/3321098874.jpg" | prepend: site.baseurl }}
+  [2]: {{ "/images/2015/11/489823932.jpg" | prepend: site.baseurl }}
+  [3]: {{ "/images/2015/11/401109454.jpg" | prepend: site.baseurl }}
+  [4]: {{ "/images/2015/11/4193181954.jpg" | prepend: site.baseurl }}
+  [5]: {{ "/images/2015/11/3378152484.jpg" | prepend: site.baseurl }}
+  [6]: {{ "/images/2015/11/2349929794.jpg" | prepend: site.baseurl }}
+  [7]: {{ "/images/2015/11/1535410934.jpg" | prepend: site.baseurl }}
+  [8]: {{ "/images/2015/11/4174790615.jpg" | prepend: site.baseurl }}
+  [9]: {{ "/images/2015/11/1561251817.jpg" | prepend: site.baseurl }}
+  [10]: {{ "/images/2015/11/4218401084.jpg" | prepend: site.baseurl }}
+  [11]: {{ "/images/2015/11/4083527838.jpg" | prepend: site.baseurl }}
+  [12]: {{ "/images/2015/11/3466455047.jpg" | prepend: site.baseurl }}
+  [13]: {{ "/images/2015/11/1905441106.jpg" | prepend: site.baseurl }}
+  [14]: {{ "/images/2015/11/2452731900.jpg" | prepend: site.baseurl }}
+  [15]: {{ "/images/2015/11/546235287.jpg" | prepend: site.baseurl }}
+  [16]: {{ "/images/2015/11/1239925101.jpg" | prepend: site.baseurl }}
+  [17]: {{ "/images/2015/11/3285815579.jpg" | prepend: site.baseurl }}
+  [18]: {{ "/images/2015/11/2694318804.jpg" | prepend: site.baseurl }}
+  [19]: {{ "/images/2015/11/3771279979.jpg" | prepend: site.baseurl }}
+  [20]: {{ "/images/2015/11/825003851.jpg" | prepend: site.baseurl }}
+  [21]: {{ "/images/2015/11/1425688746.jpg" | prepend: site.baseurl }}
+  [22]: {{ "/images/2015/11/682135.jpg" | prepend: site.baseurl }}
+  [23]: {{ "/images/2015/11/3379383263.jpg" | prepend: site.baseurl }}
+  [24]: {{ "/images/2015/11/2563410085.jpg" | prepend: site.baseurl }}
+  [25]: {{ "/images/2015/11/2156296451.jpg" | prepend: site.baseurl }}
+  [26]: {{ "/images/2015/11/933935305.jpg" | prepend: site.baseurl }}
+  [27]: {{ "/images/2015/11/3087681262.jpg" | prepend: site.baseurl }}
+  [28]: {{ "/images/2015/11/2156316537.jpg" | prepend: site.baseurl }}
+  [29]: {{ "/images/2015/11/1634119745.jpg" | prepend: site.baseurl }}
+  [30]: {{ "/images/2015/11/1876883501.jpg" | prepend: site.baseurl }}
+  [31]: {{ "/images/2015/11/1365065574.jpg" | prepend: site.baseurl }}
+  [32]: {{ "/images/2015/11/157549072.jpg" | prepend: site.baseurl }}
+  [33]: {{ "/images/2015/11/579653430.jpg" | prepend: site.baseurl }}
+  [34]: {{ "/images/2015/11/3573947225.jpg" | prepend: site.baseurl }}
