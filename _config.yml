@@ -10,7 +10,7 @@ email: li.blackeeper@gmail.com
 
 # Build settings
 markdown: kramdown
-gems: [jekyll-paginate]
+gems: ['jekyll-paginate']
 
 #摘要分隔符
 excerpt_separator: <!-- more -->
