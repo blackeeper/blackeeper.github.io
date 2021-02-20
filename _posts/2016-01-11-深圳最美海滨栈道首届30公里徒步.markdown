@@ -46,8 +46,8 @@ comments: true
 到达终点
 ![终点][14]
 
-
-  "http://www.doyouhike.net/forum/leisure/2335783,0,0,1.html"
+<!-- 
+  [1]: {{ "http://www.doyouhike.net/forum/leisure/2335783,0,0,1.html" | prepend: sie.baseurl }} -->
   [2]: {{ "/images/2016/01/3082645101.jpg" | prepend: sie.baseurl }}
   [3]: {{ "/images/2016/01/IMG_20160110_094255.jpg" | prepend: sie.baseurl }}
   [4]: {{ "/images/2016/01/IMG_20160110_111646.jpg" | prepend: sie.baseurl }}
